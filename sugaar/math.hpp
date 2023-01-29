@@ -58,7 +58,7 @@ namespace sugaar {
 		}
 
 		double length_squared() const {
-			return (this) * (this);
+			return dot(this, this);
 		}
 
 	private:
