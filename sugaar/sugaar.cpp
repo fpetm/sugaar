@@ -11,7 +11,8 @@ int main() {
 			double g = double(y) / 999;
 			double b = 0.25;
 			double a = 1.0;
-			img->set(x, y, sugaar::Vector<4>(r, g, b, a));
+			sugaar::Vec4 color(r, g, b, a);
+			img->set(x, y, color);
 		}
 	}
 	img->save("test.png");

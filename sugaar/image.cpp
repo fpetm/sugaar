@@ -4,7 +4,7 @@
 #include "../stb/stb_image_write.h"
 
 void sugaar::Image::save(std::string path) {
-	char* data = (char*)malloc(width * height * 4);
+	char* data = new char[width * height * 4];
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			data[(y * width + x) * 4 + 0] = (char)(get(x, y).X() * 255.999);
@@ -15,5 +15,5 @@ void sugaar::Image::save(std::string path) {
 	}
 	stbi_flip_vertically_on_write(1);
 	stbi_write_png(path.c_str(), width, height, 4, data, sizeof(char) * 4 * width);
-	free(data);
+	delete[] data;
 }

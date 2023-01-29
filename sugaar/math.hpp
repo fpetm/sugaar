@@ -66,6 +66,14 @@ namespace sugaar {
 	};
 
 	template<std::uint64_t N>
+	inline std::ostream& operator<<(std::ostream& out, const Vector<N>& v) {
+		for (int i = 0; i < N; i++) {
+			out << v[i] << " ";
+		}
+		return out;
+	}
+
+	template<std::uint64_t N>
 	inline Vector<N> operator+(const Vector<N>& A, const Vector<N>& B) {
 		std::array<double, N> Cvals;
 		for (int i = 0; i < N; i++) {
@@ -120,5 +128,9 @@ namespace sugaar {
 			u.Z() * v.X() - u.X() * v.Z(),
 			u.X() * v.Y() - u.Y() * v.X());
 	}
+
+	typedef Vector<2> Vec2;
+	typedef Vector<3> Vec3;
+	typedef Vector<4> Vec4;
 
 }
