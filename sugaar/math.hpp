@@ -12,6 +12,8 @@ namespace sugaar {
 		template<std::uint64_t N = 2> Vector(double x, double y) : e({ x,y }) {}
 		template<std::uint64_t N = 3> Vector(double x, double y, double z) : e({ x,y,z }) {}
 		template<std::uint64_t N = 4> Vector(double x, double y, double z, double w) : e({ x,y,z,w }) {}
+		template<std::uint64_t N = 4> Vector(Vector<3> v, double w) : e({ v.X(), v.Y(), v.Z(), w}) {}
+
 
 		double X() const { return e[0]; }
 		double Y() const { return e[1]; }

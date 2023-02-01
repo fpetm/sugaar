@@ -1,3 +1,5 @@
+#pragma once
+#include "sugaar.hpp"
 #include "math.hpp"
 
 namespace sugaar {
