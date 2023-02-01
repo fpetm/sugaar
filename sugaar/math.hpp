@@ -58,7 +58,7 @@ namespace sugaar {
 		}
 
 		double length_squared() const {
-			return dot(this, this);
+			return dot(*this, *this);
 		}
 
 	private:
@@ -77,7 +77,7 @@ namespace sugaar {
 	inline Vector<N> operator+(const Vector<N>& A, const Vector<N>& B) {
 		std::array<double, N> Cvals;
 		for (int i = 0; i < N; i++) {
-			Cvals = A[i] + B[i];
+			Cvals[i] = A[i] + B[i];
 		}
 		return Vector<N>(Cvals);
 	}
@@ -86,7 +86,7 @@ namespace sugaar {
 	inline Vector<N> operator-(const Vector<N>& A, const Vector<N>& B) {
 		std::array<double, N> Cvals;
 		for (int i = 0; i < N; i++) {
-			Cvals = A[i] - B[i];
+			Cvals[i] = A[i] - B[i];
 		}
 		return Vector<N>(Cvals);
 	}
@@ -95,7 +95,7 @@ namespace sugaar {
 	inline Vector<N> operator*(const Vector<N>& A, const Vector<N>& B) {
 		std::array<double, N> Cvals;
 		for (int i = 0; i < N; i++) {
-			Cvals = A[i] * B[i];
+			Cvals[i] = A[i] * B[i];
 		}
 		return Vector<N>(Cvals);
 	}
@@ -104,19 +104,24 @@ namespace sugaar {
 	inline Vector<N> operator*(double lambda, const Vector<N>& A) {
 		std::array<double, N> Cvals;
 		for (int i = 0; i < N; i++) {
-			Cvals = A[i] * lambda;
+			Cvals[i] = A[i] * lambda;
 		}
 		return Vector<N>(Cvals);
 	}
 
 	template<std::uint64_t N>
 	inline Vector<N> operator*(const Vector<N>& A, double lambda) {
-		return A * lambda;
+		return lambda * A;
 	}
 
 	template<std::uint64_t N>
-	inline Vector<N> dot(const Vector<N>& A, const Vector<N>& B) {
-		double result;
+	inline Vector<N> operator/(const Vector<N>& A, double lambda) {
+		return A * (1/lambda);
+	}
+
+	template<std::uint64_t N>
+	inline double dot(const Vector<N>& A, const Vector<N>& B) {
+		double result = 0.0;
 		for (int i = 0; i < N; i++) {
 			result += A[i] * B[i];
 		}
@@ -127,6 +132,11 @@ namespace sugaar {
 		return Vector<3>(u.Y() * v.Z() - u.Z() * v.Y(),
 			u.Z() * v.X() - u.X() * v.Z(),
 			u.X() * v.Y() - u.Y() * v.X());
+	}
+
+	template<std::uint64_t N>
+	inline Vector<N> unit_vector(const Vector<N>& A) {
+		return A / A.length();
 	}
 
 	typedef Vector<2> Vec2;
