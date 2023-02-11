@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include "math.hpp"
+
 #include "../stb/stb_image.h"
 
 namespace sugaar {

@@ -11,10 +11,15 @@ constexpr std::uint32_t height = 720;
 
 using namespace sugaar;
 
-Vec4 ray_color(const Ray& r, const Hittable& world) {
+Vec4 ray_color(const Ray& r, const Hittable& world, int depth) {
 	HitRecord rec;
-	if (world.hit(r, 0, infinity, rec)) {
-		return 0.5 * Vec4((rec.normal + Vec3(1, 1, 1)), 2.0);
+
+	if (depth <= 0) return Vec4(0, 0, 0, 0);
+
+	if (world.hit(r, 0.001, infinity, rec)) {
+		Vec3 target = rec.p + rec.normal + Vec3::random_unit_vector();
+		return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth-1);
+		//return 0.5 * Vec4((rec.normal + Vec3(1, 1, 1)), 2.0);
 	}
 	Vec3 unit_direction = unit_vector(r.direction());
 	auto t = 0.5 * (unit_direction.Y() + 1.0);
@@ -24,6 +29,7 @@ Vec4 ray_color(const Ray& r, const Hittable& world) {
 int main() {
 	Camera cam((double)width/(double)height, 2.0, 1.0);
 	const int samples_per_pixel = 100;
+	const int max_depth = 50;
 
 	Image img(width, height);
 
@@ -39,9 +45,13 @@ int main() {
 				auto u = (double(x) + random_double()) / ((double)(width - 1));
 				auto v = (double(y) + random_double()) / ((double)(height - 1));
 				Ray r = cam.get_ray(u, v);
-				pixel_color += ray_color(r, world);
+				pixel_color += ray_color(r, world, max_depth);
 			}
-			img.set(x, y, pixel_color/((double)samples_per_pixel));
+			pixel_color[0] = sqrt(pixel_color[0] / (double)samples_per_pixel);
+			pixel_color[1] = sqrt(pixel_color[1] / (double)samples_per_pixel);
+			pixel_color[2] = sqrt(pixel_color[2] / (double)samples_per_pixel);
+			pixel_color[3] = sqrt(pixel_color[3] / (double)samples_per_pixel);
+			img.set(x, y, pixel_color);
 		}
 	}
 

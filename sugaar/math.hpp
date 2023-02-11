@@ -64,6 +64,34 @@ namespace sugaar {
 			return dot(*this, *this);
 		}
 
+		inline static Vector<N> random() {
+			Vector<N> result;
+			for (int i = 0; i < N; i++) {
+				result[i] = random();
+			}
+			return result;
+		}
+
+		inline static Vector<N> random(double min, double max) {
+			Vector<N> result;
+			for (int i = 0; i < N; i++) {
+				result[i] = random_double(min, max);
+			}
+			return result;
+		}
+
+		inline static Vector<N> random_in_unit_sphere() {
+			while (true) {
+				auto p = Vector<N>::random(-1, 1);
+				if (p.length_squared() >= 1) continue;
+				return p;
+			}
+		}
+
+		inline static Vector<N> random_unit_vector() {
+			return unit_vector(Vector<N>::random_in_unit_sphere());
+		}
+
 	private:
 		std::array<double, N> e;
 	};
@@ -182,5 +210,6 @@ namespace sugaar {
 		if (x > max) return max;
 		return x;
 	}
+
 
 }
