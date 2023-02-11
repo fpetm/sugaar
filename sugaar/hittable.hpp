@@ -1,14 +1,17 @@
 #pragma once
 #include "sugaar.hpp"
-
 #include "ray.hpp"
 
 namespace sugaar {
+	class Material;
+
 	struct HitRecord {
 		Vec3 p;
 		Vec3 normal;
 		double t;
 		bool front_face;
+
+		std::shared_ptr<Material> material_ptr;
 
 		inline void set_face_normal(const Ray& r, const Vec3& outward_normal) {
 			front_face = dot(r.direction(), outward_normal) < 0;

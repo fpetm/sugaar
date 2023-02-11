@@ -4,6 +4,7 @@
 #include "ray.hpp"
 #include "hittable_list.hpp"
 #include "sphere.hpp"
+#include "material.hpp"
 #include "camera.hpp"
 
 constexpr std::uint32_t width = 1280;
@@ -17,10 +18,15 @@ Vec4 ray_color(const Ray& r, const Hittable& world, int depth) {
 	if (depth <= 0) return Vec4(0, 0, 0, 0);
 
 	if (world.hit(r, 0.001, infinity, rec)) {
-		Vec3 target = rec.p + rec.normal + Vec3::random_unit_vector();
-		return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth-1);
-		//return 0.5 * Vec4((rec.normal + Vec3(1, 1, 1)), 2.0);
+		Ray scatttered;
+		Vec4 attenuation;
+
+		if (rec.material_ptr->scatter(r, rec, attenuation, scatttered))
+			return attenuation * ray_color(scatttered, world, depth - 1);
+
+		return Vec4(0, 0, 0, 0);
 	}
+
 	Vec3 unit_direction = unit_vector(r.direction());
 	auto t = 0.5 * (unit_direction.Y() + 1.0);
 	return (1.0 - t) * Vec4(1.0, 1.0, 1.0, 1.0) + t * Vec4(0.3, 0.4, 0.5, 1.0);
@@ -28,14 +34,23 @@ Vec4 ray_color(const Ray& r, const Hittable& world, int depth) {
 
 int main() {
 	Camera cam((double)width/(double)height, 2.0, 1.0);
-	const int samples_per_pixel = 100;
-	const int max_depth = 50;
+	const int samples_per_pixel = 50;
+	const int max_depth = 5;
 
 	Image img(width, height);
 
 	HittableList world;
-	world.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
-	world.add(std::make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
+	
+	auto material_ground = std::make_shared<Lambertian>(Vec4(0.8, 0.8, 0.0, 1.0));
+	auto material_center = std::make_shared<Lambertian>(Vec4(0.7, 0.3, 0.3, 1.0));
+	auto material_left = std::make_shared<Metal>(Vec4(0.8, 0.8, 0.8, 1.0), 0.3);
+	auto material_right = std::make_shared<Metal>(Vec4(0.8, 0.6, 0.2, 1.0), 1.0);
+
+	world.add(std::make_shared<Sphere>(Vec3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.add(std::make_shared<Sphere>(Vec3(0.0, 0.0, -1.0), 0.5, material_center));
+	world.add(std::make_shared<Sphere>(Vec3(-1.0, 0.0, -1.0), 0.5, material_left));
+	world.add(std::make_shared<Sphere>(Vec3(1.0, 0.0, -1.0), 0.5, material_right));
+
 
 	for (int y = 0; y < height; y++) {
 		std::cout << "Rendering line " << y << "\n";

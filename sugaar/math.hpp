@@ -92,6 +92,13 @@ namespace sugaar {
 			return unit_vector(Vector<N>::random_in_unit_sphere());
 		}
 
+		bool near_zero() const {
+			const auto s = 1e-8;
+			for (int i = 0; i < N; i++) {
+				if (abs(e[i]) >= s) return false;
+			}
+			return true;
+		}
 	private:
 		std::array<double, N> e;
 	};
@@ -188,6 +195,11 @@ namespace sugaar {
 	template<std::uint64_t N>
 	inline Vector<N> unit_vector(const Vector<N>& A) {
 		return A / A.length();
+	}
+
+	template<std::uint64_t N>
+	inline Vector<N> reflect(const Vector<N>& v, const Vector<N>& n) {
+		return v - 2 * dot(v, n) * n;
 	}
 
 	typedef Vector<2> Vec2;
