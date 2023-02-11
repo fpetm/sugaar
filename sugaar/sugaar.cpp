@@ -4,6 +4,7 @@
 #include "ray.hpp"
 #include "hittable_list.hpp"
 #include "sphere.hpp"
+#include "camera.hpp"
 
 constexpr std::uint32_t width = 1280;
 constexpr std::uint32_t height = 720;
@@ -21,16 +22,8 @@ Vec4 ray_color(const Ray& r, const Hittable& world) {
 }
 
 int main() {
-	const auto aspect_ratio = double(width) / double(height);
-	
-	auto viewport_height = 2.0;
-	auto viewport_width = aspect_ratio * viewport_height;
-	auto focal_length = 1.0;
-
-	auto origin = Vec3(0, 0, 0);
-	auto horizontal = Vec3(viewport_width, 0, 0);
-	auto vertical = Vec3(0, viewport_height, 0);
-	auto lower_left_corner = origin - horizontal / 2 - vertical / 2 - Vec3(0, 0, focal_length);
+	Camera cam((double)width/(double)height, 2.0, 1.0);
+	const int samples_per_pixel = 100;
 
 	Image img(width, height);
 
@@ -38,13 +31,17 @@ int main() {
 	world.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
 	world.add(std::make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
 
-	for (int x = 0; x < width; x++) {
-		for (int y = 0; y < height; y++) {
-			auto u = double(x) / double(width - 1);
-			auto v = double(y) / double(height - 1);
-			Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-			Vec4 color = ray_color(r, world);
-			img.set(x, y, color);
+	for (int y = 0; y < height; y++) {
+		std::cout << "Rendering line " << y << "\n";
+		for (int x = 0; x < width; x++) {	
+			Vec4 pixel_color(0, 0, 0, 0);
+			for (int s = 0; s < samples_per_pixel; s++) {
+				auto u = (double(x) + random_double()) / ((double)(width - 1));
+				auto v = (double(y) + random_double()) / ((double)(height - 1));
+				Ray r = cam.get_ray(u, v);
+				pixel_color += ray_color(r, world);
+			}
+			img.set(x, y, pixel_color/((double)samples_per_pixel));
 		}
 	}
 
