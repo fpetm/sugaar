@@ -75,11 +75,11 @@ namespace sugaar {
 		}
 		return out;
 	}
-	/*
+	
 	template<std::uint64_t N = 3>
 	inline Vector<N> operator+(const Vector<3>& A, const Vector<3>& B) {
 		return Vec3(A.X() + B.X(), A.Y() + B.Y(), A.Z() + B.Z());
-	}*/
+	}
 
 	template<std::uint64_t N>
 	inline Vector<N> operator+(const Vector<N>& A, const Vector<N>& B) {
@@ -89,11 +89,11 @@ namespace sugaar {
 		}
 		return Vector<N>(Cvals);
 	}
-	/*
+	
 	template<std::uint64_t N = 3>
 	inline Vector<N> operator-(const Vector<3>& A, const Vector<3>& B) {
 		return Vec3(A.X() - B.X(), A.Y() - B.Y(), A.Z() - B.Z());
-	}*/
+	}
 
 	template<std::uint64_t N>
 	inline Vector<N> operator-(const Vector<N>& A, const Vector<N>& B) {
@@ -112,11 +112,11 @@ namespace sugaar {
 		}
 		return Vector<N>(Cvals);
 	}
-	/*
+	
 	template<std::uint64_t N = 3>
 	inline Vector<3> operator*(double lambda, const Vector<3>& A) {
 		return Vec3(lambda * A.X(), lambda * A.Y(), lambda * A.Z());
-	}*/
+	}
 
 	template<std::uint64_t N>
 	inline Vector<N> operator*(double lambda, const Vector<N>& A) {
@@ -136,11 +136,11 @@ namespace sugaar {
 	inline Vector<N> operator/(const Vector<N>& A, double lambda) {
 		return A * (1/lambda);
 	}
-	/*
+	
 	template<std::uint64_t N = 3>
 	inline double dot(const Vector<3>& A, const Vector<3>& B) {
-		return (A.X() * B.X()) + (A.Y() * B.Y()) + (A.Z() + B.Z());
-	}*/
+		return (A.X() * B.X()) + (A.Y() * B.Y()) + (A.Z() * B.Z());
+	}
 
 	template<std::uint64_t N>
 	inline double dot(const Vector<N>& A, const Vector<N>& B) {
