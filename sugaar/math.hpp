@@ -202,6 +202,14 @@ namespace sugaar {
 		return v - 2 * dot(v, n) * n;
 	}
 
+	template<std::uint64_t N>
+	inline Vector<N> refract(const Vector<N>& uv, const Vector<N>& n, double etai_over_etat) {
+		double cos_theta = std::min(dot(-uv, n), 1.0);
+		Vector<N> r_out_perp = etai_over_etat * (uv + cos_theta * n);
+		Vector<N> r_out_paralell = -sqrt(abs(1.0 - r_out_perp.length_squared())) * n;
+		return r_out_perp + r_out_paralell;
+	}
+
 	typedef Vector<2> Vec2;
 	typedef Vector<3> Vec3;
 	typedef Vector<4> Vec4;
