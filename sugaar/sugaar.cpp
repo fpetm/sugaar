@@ -8,7 +8,8 @@
 #include "camera.hpp"
 
 constexpr std::uint32_t width = 320;
-constexpr std::uint32_t height = 240;
+constexpr std::uint32_t height = 180;
+constexpr double aspect_ratio = ((double)width / (double) height);
 
 using namespace sugaar;
 
@@ -33,7 +34,6 @@ Vec4 ray_color(const Ray& r, const Hittable& world, int depth) {
 }
 
 int main() {
-	Camera cam((double)width/(double)height, 2.0, 1.0);
 	const int samples_per_pixel = 100;
 	const int max_depth = 50;
 
@@ -44,13 +44,15 @@ int main() {
 	auto material_ground = std::make_shared<Lambertian>(Vec4(0.8, 0.8, 0.0, 1.0));
 	auto material_center = std::make_shared<Lambertian>(Vec4(0.1, 0.2, 0.5, 1.0));
 	auto material_left = std::make_shared<Dielectric>(1.5);
-	auto material_right = std::make_shared<Metal>(Vec4(0.8, 0.6, 0.2, 1.0), 1.0);
+	auto material_right = std::make_shared<Metal>(Vec4(0.8, 0.6, 0.2, 1.0), 0.0);
 
 	world.add(std::make_shared<Sphere>(Vec3(0.0, -100.5, -1.0), 100.0, material_ground));
 	world.add(std::make_shared<Sphere>(Vec3(0.0, 0.0, -1.0), 0.5, material_center));
-	world.add(std::make_shared<Sphere>(Vec3(-1.0, 0.0, -1.0), -0.4, material_left));
 	world.add(std::make_shared<Sphere>(Vec3(-1.0, 0.0, -1.0), 0.5, material_left));
+	world.add(std::make_shared<Sphere>(Vec3(-1.0, 0.0, -1.0), -0.45, material_left));
 	world.add(std::make_shared<Sphere>(Vec3(1.0, 0.0, -1.0), 0.5, material_right));
+
+	Camera cam(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), pi/8, aspect_ratio);
 
 
 	for (int y = 0; y < height; y++) {
