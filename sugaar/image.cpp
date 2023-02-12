@@ -1,7 +1,7 @@
 #include "image.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../stb/stb_image_write.h"
+#include <stb/stb_image_write.h>
 
 void sugaar::Image::save(std::string path) {
 	char* data = new char[width * height * 4];

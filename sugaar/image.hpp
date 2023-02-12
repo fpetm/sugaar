@@ -5,8 +5,6 @@
 #include <mutex>
 #include "math.hpp"
 
-#include "../stb/stb_image.h"
-
 namespace sugaar {
 	class Image {
 	public:
