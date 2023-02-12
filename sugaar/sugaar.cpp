@@ -7,11 +7,14 @@
 #include "material.hpp"
 #include "camera.hpp"
 
+#include <thread>
+
 constexpr std::uint32_t width = 1280;
 constexpr std::uint32_t height = 720;
 constexpr double aspect_ratio = ((double)width / (double) height);
 
 using namespace sugaar;
+
 
 Vec4 ray_color(const Ray& r, const Hittable& world, int depth) {
 	HitRecord rec;
@@ -59,23 +62,28 @@ int main() {
 	double aperture = 2.0;
 	Camera cam(lookfrom, lookat, vup, pi/4, aspect_ratio, aperture, dist_to_focus);
 
+	std::array<std::thread, height> threads;
+	for (int y = 0; y < height; y++) {
+		threads[y] = std::thread([&img, &cam, &world, y, max_depth, samples_per_pixel]() {
+			for (int x = 0; x < width; x++) {
+				Vec4 pixel_color(0, 0, 0, 0);
+				for (int s = 0; s < samples_per_pixel; s++) {
+					auto u = (double(x) + random_double()) / ((double)(width - 1));
+					auto v = (double(y) + random_double()) / ((double)(height - 1));
+					Ray r = cam.get_ray(u, v);
+					pixel_color += ray_color(r, world, max_depth);
+				}
+				pixel_color[0] = sqrt(pixel_color[0] / (double)samples_per_pixel);
+				pixel_color[1] = sqrt(pixel_color[1] / (double)samples_per_pixel);
+				pixel_color[2] = sqrt(pixel_color[2] / (double)samples_per_pixel);
+				pixel_color[3] = sqrt(pixel_color[3] / (double)samples_per_pixel);
+				img.set(x, y, pixel_color);
+			}
+		});
+	}
 
 	for (int y = 0; y < height; y++) {
-		std::cout << "Rendering line " << y << "\n";
-		for (int x = 0; x < width; x++) {	
-			Vec4 pixel_color(0, 0, 0, 0);
-			for (int s = 0; s < samples_per_pixel; s++) {
-				auto u = (double(x) + random_double()) / ((double)(width - 1));
-				auto v = (double(y) + random_double()) / ((double)(height - 1));
-				Ray r = cam.get_ray(u, v);
-				pixel_color += ray_color(r, world, max_depth);
-			}
-			pixel_color[0] = sqrt(pixel_color[0] / (double)samples_per_pixel);
-			pixel_color[1] = sqrt(pixel_color[1] / (double)samples_per_pixel);
-			pixel_color[2] = sqrt(pixel_color[2] / (double)samples_per_pixel);
-			pixel_color[3] = sqrt(pixel_color[3] / (double)samples_per_pixel);
-			img.set(x, y, pixel_color);
-		}
+		threads[y].join();
 	}
 
 	img.save("sugaar.png");

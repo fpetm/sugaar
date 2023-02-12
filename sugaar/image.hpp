@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <mutex>
 #include "math.hpp"
 
 #include "../stb/stb_image.h"
@@ -13,13 +14,18 @@ namespace sugaar {
 
 		Vector<4> get(std::uint32_t x, std::uint32_t y) const { return pixels[y * width + x]; }
 		Vector<4>& get(std::uint32_t x, std::uint32_t y) { return pixels[y * width + x]; }
-		void set(std::uint32_t x, std::uint32_t y, const Vector<4> &data) { get(x,y) = data; }
+		void set(std::uint32_t x, std::uint32_t y, const Vector<4> &data) { 
+			std::lock_guard<std::mutex> lock(m);
+			get(x,y) = data; 
+		}
 
 		void save(std::string path);
 		
 	private:
 		std::uint32_t width, height;
 		std::vector<Vector<4>> pixels;
+		
+		std::mutex m;
 	};
 
 	
