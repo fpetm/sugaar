@@ -15,7 +15,6 @@ namespace sugaar {
 		template<std::uint64_t N = 4> Vector(double x, double y, double z, double w) : e({ x,y,z,w }) {}
 		template<std::uint64_t N = 4> Vector(Vector<3> v, double w) : e({ v.X(), v.Y(), v.Z(), w}) {}
 
-
 		double X() const { return e[0]; }
 		double Y() const { return e[1]; }
 		double Z() const { return e[2]; }
@@ -102,6 +101,10 @@ namespace sugaar {
 	private:
 		std::array<double, N> e;
 	};
+
+	typedef Vector<2> Vec2;
+	typedef Vector<3> Vec3;
+	typedef Vector<4> Vec4;
 
 	template<std::uint64_t N>
 	inline std::ostream& operator<<(std::ostream& out, const Vector<N>& v) {
@@ -209,11 +212,6 @@ namespace sugaar {
 		Vector<N> r_out_paralell = -sqrt(abs(1.0 - r_out_perp.length_squared())) * n;
 		return r_out_perp + r_out_paralell;
 	}
-
-	typedef Vector<2> Vec2;
-	typedef Vector<3> Vec3;
-	typedef Vector<4> Vec4;
-
 	// returns a random number in the interval [0,1[
 	inline double random_double() {
 		static std::uniform_real_distribution<double> distribution(0.0, 1.0);

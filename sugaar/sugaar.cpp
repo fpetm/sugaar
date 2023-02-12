@@ -7,8 +7,8 @@
 #include "material.hpp"
 #include "camera.hpp"
 
-constexpr std::uint32_t width = 320;
-constexpr std::uint32_t height = 180;
+constexpr std::uint32_t width = 1280;
+constexpr std::uint32_t height = 720;
 constexpr double aspect_ratio = ((double)width / (double) height);
 
 using namespace sugaar;
@@ -52,7 +52,12 @@ int main() {
 	world.add(std::make_shared<Sphere>(Vec3(-1.0, 0.0, -1.0), -0.45, material_left));
 	world.add(std::make_shared<Sphere>(Vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
-	Camera cam(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), pi/8, aspect_ratio);
+	Vec3 lookfrom(3, 3, 2);
+	Vec3 lookat(0, 0, -1);
+	Vec3 vup(0, 1, 0);
+	auto dist_to_focus = (lookfrom - lookat).length();
+	double aperture = 2.0;
+	Camera cam(lookfrom, lookat, vup, pi/4, aspect_ratio, aperture, dist_to_focus);
 
 
 	for (int y = 0; y < height; y++) {
