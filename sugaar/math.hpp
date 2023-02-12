@@ -66,7 +66,7 @@ namespace sugaar {
 		inline static Vector<N> random() {
 			Vector<N> result;
 			for (int i = 0; i < N; i++) {
-				result[i] = random();
+				result[i] = random_double();
 			}
 			return result;
 		}
