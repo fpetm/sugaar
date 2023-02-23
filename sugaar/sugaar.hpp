@@ -1,25 +1,28 @@
 ﻿#pragma once
 
 /* C++ headers */
-#include <iostream>
-#include <vector>
 #include <array>
-#include <memory>
+#include <iostream>
 #include <limits>
+#include <memory>
+#include <vector>
 
 /* C headers */
 #include <cmath>
 
-#include "math.hpp"
 
 namespace sugaar {
-	const double infinity = std::numeric_limits<double>::infinity();
-	const double pi = 3.141592653589793115998;
-	const double e = 2.718281828459045090796;
 
+const double infinity = std::numeric_limits<double>::infinity();
+constexpr double pi = 3.141592653589793115998;
+constexpr double e = 2.718281828459045090796;
 
-	constexpr std::uint32_t width = 1920;
-	constexpr std::uint32_t height = 1080;
-	constexpr double aspect_ratio = ((double)width / (double)height);
+constexpr std::uint32_t width = 190;
+constexpr std::uint32_t height = 108;
+constexpr double aspect_ratio =
+    (static_cast<double>(width) / static_cast<double>(height));
 
-}
+typedef std::uint64_t u64;
+typedef std::uint32_t u32;
+
+}  // namespace sugaar
